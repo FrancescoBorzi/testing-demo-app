@@ -1,10 +1,10 @@
 import { Component } from '@angular/core';
 import { RouterModule } from '@angular/router';
-import { NxWelcomeComponent } from './nx-welcome.component';
+import { CounterComponent } from '@testing-demo-app/counter';
 
 @Component({
   standalone: true,
-  imports: [NxWelcomeComponent, RouterModule],
+  imports: [CounterComponent, RouterModule],
   selector: 'testing-demo-app-root',
   templateUrl: './app.component.html',
   styleUrl: './app.component.scss',
