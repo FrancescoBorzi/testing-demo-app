@@ -1,6 +1,6 @@
 <div class="main-wrapper">
-  <button (click)="reset()">Reset</button>
-  <button (click)="decrease()">Decrease</button>
-  <button (click)="increase()">Increase</button>
-  <span>{{ count }}</span>
+  <button data-test-id="reset" (click)="reset()">Reset</button>
+  <button data-test-id="decrease" (click)="decrease()">Decrease</button>
+  <button data-test-id="increase" (click)="increase()">Increase</button>
+  <span data-test-id="count">{{ count }}</span>
 </div>
