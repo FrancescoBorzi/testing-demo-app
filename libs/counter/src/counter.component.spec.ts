@@ -1,6 +1,33 @@
-import { TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { CounterComponent } from './counter.component';
 import { By } from '@angular/platform-browser';
+import { DebugElement } from '@angular/core';
+
+abstract class PageObject<ComponentType> {
+  constructor(protected fixture: ComponentFixture<ComponentType>) {}
+
+  detectChanges(): void {
+    this.fixture.detectChanges();
+  }
+
+  getDebugElementByCss(cssSelector: string, assert = true): DebugElement {
+    const debugElement = this.fixture.debugElement.query(By.css(cssSelector));
+
+    if (assert) {
+      try {
+        expect(debugElement).toBeTruthy();
+      } catch(e) {
+        throw new Error(`Element with selector "${cssSelector}" was not found.`);
+      }
+    }
+
+    return debugElement;
+  }
+  getDebugElementByTestId(testId: string, assert = true): DebugElement {
+    return this.getDebugElementByCss(`[data-test-id="${testId}"]`, assert);
+  }
+}
+
 
 describe('CounterComponent - Component class testing', () => {
 
@@ -60,6 +87,36 @@ describe('CounterComponent - Component class testing', () => {
 
 describe('CounterComponent - Component DOM testing', () => {
 
+  class CounterPage extends PageObject<CounterComponent> {
+    // methods to retrieve the elements
+    getIncreaseButton(): DebugElement {
+      return this.getDebugElementByTestId('increase');
+    }
+    getDecreaseButton(): DebugElement {
+      return this.getDebugElementByTestId('decrease');
+    }
+    getResetButton(): DebugElement {
+      return this.getDebugElementByTestId('reset');
+    }
+    getCount(): DebugElement {
+      return this.getDebugElementByTestId('count');
+    }
+
+    // methods to perform actions
+    clickIncreaseButton(): void {
+      this.getIncreaseButton().nativeElement.click();
+    }
+    clickDecreaseButton(): void {
+      this.getDecreaseButton().nativeElement.click();
+    }
+    clickResetButton(): void {
+      this.getResetButton().nativeElement.click();
+    }
+    expectCurrentCountToBe(value: number) {
+      expect(this.getCount().nativeElement.innerHTML).toEqual(`${value}`);
+    }
+  }
+
   beforeEach(async () => {
     await TestBed.configureTestingModule({
       imports: [CounterComponent],
@@ -69,55 +126,55 @@ describe('CounterComponent - Component DOM testing', () => {
   function setup() {
     const fixture = TestBed.createComponent(CounterComponent);
     const component = fixture.componentInstance;
-    return { fixture, component };
+    const page = new CounterPage(fixture);
+    return { fixture, component, page };
   }
 
   it('should have the counter set to 0 by default', () => {
-    const { fixture } = setup();
+    const { page } = setup();
 
-    fixture.detectChanges();
+    page.detectChanges();
 
-    expect(fixture.debugElement.query(By.css(`[data-test-id="count"]`)).nativeElement.innerHTML).toEqual('0');
+    page.expectCurrentCountToBe(0);
   });
 
   it('should increase the counter when clicking on the increase button', () => {
-    const { fixture } = setup();
-    fixture.detectChanges();
+    const { page } = setup();
 
-    fixture.debugElement.query(By.css(`[data-test-id="increase"]`)).nativeElement.click();
-    fixture.detectChanges();
+    page.clickIncreaseButton();
+    page.detectChanges();
 
-    expect(fixture.debugElement.query(By.css(`[data-test-id="count"]`)).nativeElement.innerHTML).toEqual('1');
+    page.expectCurrentCountToBe(1);
   });
 
   it('should decrease the counter if the current value is greater than 0 when clicking on the decrease button', () => {
-    const { fixture } = setup();
-    fixture.debugElement.query(By.css(`[data-test-id="increase"]`)).nativeElement.click();
-    fixture.debugElement.query(By.css(`[data-test-id="increase"]`)).nativeElement.click();
+    const { page } = setup();
+    page.clickIncreaseButton();
+    page.clickIncreaseButton();
 
-    fixture.debugElement.query(By.css(`[data-test-id="decrease"]`)).nativeElement.click();
-    fixture.detectChanges();
+    page.clickDecreaseButton();
+    page.detectChanges();
 
-    expect(fixture.debugElement.query(By.css(`[data-test-id="count"]`)).nativeElement.innerHTML).toEqual('1');
+    page.expectCurrentCountToBe(1);
   });
 
   it('should NOT decrease the counter if the current value is 0 when clicking on the decrease button', () => {
-    const { fixture } = setup();
+    const { page } = setup();
 
-    fixture.debugElement.query(By.css(`[data-test-id="decrease"]`)).nativeElement.click();
-    fixture.detectChanges();
+    page.clickDecreaseButton();
+    page.detectChanges();
 
-    expect(fixture.debugElement.query(By.css(`[data-test-id="count"]`)).nativeElement.innerHTML).toEqual('0');
+    page.expectCurrentCountToBe(0);
   });
 
   it('should reset the counter when clicking the reset button', () => {
-    const { fixture } = setup();
-    fixture.debugElement.query(By.css(`[data-test-id="increase"]`)).nativeElement.click();
-    fixture.debugElement.query(By.css(`[data-test-id="increase"]`)).nativeElement.click();
+    const { page } = setup();
+    page.clickIncreaseButton();
+    page.clickIncreaseButton();
 
-    fixture.debugElement.query(By.css(`[data-test-id="reset"]`)).nativeElement.click();
-    fixture.detectChanges();
+    page.clickResetButton();
+    page.detectChanges();
 
-    expect(fixture.debugElement.query(By.css(`[data-test-id="count"]`)).nativeElement.innerHTML).toEqual('0');
+    page.expectCurrentCountToBe(0);
   });
 });
