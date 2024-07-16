@@ -1,91 +1,9 @@
-import { ComponentFixture, TestBed } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { CounterComponent } from './counter.component';
-import { By } from '@angular/platform-browser';
 import { DebugElement } from '@angular/core';
+import { PageObject } from './test-utils/page-object';
 
-abstract class PageObject<ComponentType> {
-  constructor(protected fixture: ComponentFixture<ComponentType>) {}
-
-  detectChanges(): void {
-    this.fixture.detectChanges();
-  }
-
-  getDebugElementByCss(cssSelector: string, assert = true): DebugElement {
-    const debugElement = this.fixture.debugElement.query(By.css(cssSelector));
-
-    if (assert) {
-      try {
-        expect(debugElement).toBeTruthy();
-      } catch(e) {
-        throw new Error(`Element with selector "${cssSelector}" was not found.`);
-      }
-    }
-
-    return debugElement;
-  }
-  getDebugElementByTestId(testId: string, assert = true): DebugElement {
-    return this.getDebugElementByCss(`[data-test-id="${testId}"]`, assert);
-  }
-}
-
-
-// describe('CounterComponent - Component class testing', () => {
-//
-//   beforeEach(async () => {
-//     await TestBed.configureTestingModule({
-//       imports: [CounterComponent],
-//     }).compileComponents();
-//   });
-//
-//   function setup() {
-//     const fixture = TestBed.createComponent(CounterComponent);
-//     const component = fixture.componentInstance;
-//     return { fixture, component };
-//   }
-//
-//   it('should have the counter set to 0 by default', () => {
-//     const { component } = setup();
-//
-//     expect(component.count).toBe(0);
-//   });
-//
-//   it('should increase the counter when clicking on the increase button', () => {
-//     const { component } = setup();
-//
-//     component.increase();
-//
-//     expect(component.count).toBe(1);
-//   });
-//
-//   it('should decrease the counter if the current value is greater than 0 when clicking on the decrease button', () => {
-//     const { component } = setup();
-//     component.count = 2;
-//
-//     component.decrease();
-//
-//     expect(component.count).toBe(1);
-//   });
-//
-//   it('should NOT decrease the counter if the current value is 0 when clicking on the decrease button', () => {
-//     const { component } = setup();
-//     component.count = 0;
-//
-//     component.decrease();
-//
-//     expect(component.count).toBe(0);
-//   });
-//
-//   it('should reset the counter when clicking the reset button', () => {
-//     const { component } = setup();
-//     component.count = 123;
-//
-//     component.reset();
-//
-//     expect(component.count).toBe(0);
-//   });
-// });
-
-describe('CounterComponent - Component DOM testing', () => {
+xdescribe('CounterComponent - Component DOM testing with Page Object', () => {
 
   class CounterPage extends PageObject<CounterComponent> {
     // methods to retrieve the elements

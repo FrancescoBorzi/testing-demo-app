@@ -10,19 +10,19 @@ import { CommonModule } from '@angular/common';
   styleUrl: './counter.component.scss',
 })
 export class CounterComponent {
-  protected count = 0;
+  count = 0;
 
-  protected increase(): void {
+  increase(): void {
     this.count++;
   }
 
-  protected decrease(): void {
+  decrease(): void {
     if (this.count > 0) {
       this.count--;
     }
   }
 
-  protected reset(): void {
+  reset(): void {
     this.count = 0;
   }
 }
