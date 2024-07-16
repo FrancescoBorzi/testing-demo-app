@@ -10,18 +10,10 @@ describe('AppComponent', () => {
     }).compileComponents();
   });
 
-  it('should render title', () => {
+  it('should render the testing-demo-app-counter element', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain(
-      'Welcome testing-demo-app'
-    );
-  });
-
-  it(`should have as title 'testing-demo-app'`, () => {
-    const fixture = TestBed.createComponent(AppComponent);
-    const app = fixture.componentInstance;
-    expect(app.title).toEqual('testing-demo-app');
+    expect(compiled.querySelector('testing-demo-app-counter')).toBeTruthy();
   });
 });
